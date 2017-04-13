@@ -4,32 +4,48 @@
 
 #include "Clocks.h"
 
-void ClocksClass::Clear()
-{
-	for (int i = 0; i < count_led; i++)
-	{
-		strip.setPixelColor(i, strip.Color(0, 0, 0));
-	}
-}
-
-void ClocksClass::SetTime(int hours, int minutes, int seconds)
+void ClocksClass::SetTime(byte hours, byte minutes, byte seconds)
 {
 	currentTime[0] = hours;
 	currentTime[1] = minutes;
 	currentTime[2] = seconds;
 		
-	Clear();
+	LED.clear();
 
-	SetHours(hours);
-	SetMinutes(minutes);
-	SetSeconds(seconds);
+	if (mode == Arrows)
+	{
+		SetArrows(hours, minutes, seconds);
+	}
+	else
+	{
+		SetHours(hours);
+		SetMinutes(minutes);
+		if (mode == Markup)
+		{
+			ShowMarks();
+		}
+		else
+		{
+			SetSeconds(seconds);
+		}
+	}
 
-	strip.show();
+	LED.strip.show();
 }
 
-void ClocksClass::SetHourColor(int red, int green, int blue)
+void ClocksClass::SetHourColor(byte red, byte green, byte blue)
 {
-	hourColor = strip.Color(red, green, blue);
+	hourColor = LED.strip.Color(red, green, blue);
+}
+
+void ClocksClass::SetMinuteColor(byte red, byte green, byte blue)
+{
+	minuteColor = LED.strip.Color(red, green, blue);
+}
+
+void ClocksClass::SetSecondColor(byte red, byte green, byte blue)
+{
+	secondColor = LED.strip.Color(red, green, blue);
 }
 
 void ClocksClass::SetMode(Mode mode)
@@ -37,76 +53,84 @@ void ClocksClass::SetMode(Mode mode)
 	this->mode = mode;
 }
 
-void ClocksClass::SetHours(int hours)
+void ClocksClass::SetHours(byte hours)
 {
-	int hourStep = 5;
+	byte hourStep = 5;
+	byte maxValue = hourStep * hours + hourStep;
 
-	if (hours == 0)
+	byte i = mode == Loading ? 0 : hourStep * hours;
+
+	if (mode != Loading)
 	{
-		for (int i = hoursIndex; i < hoursIndex + 60; i++)
+		if (i == 0)
 		{
-			strip.setPixelColor(i, strip.Color(0, 0, 0));
+			LED.strip.setPixelColor(LED.lines[0][58], hourColor);
+			LED.strip.setPixelColor(LED.lines[0][59], hourColor);
 		}
+		else
+		{
+			i -= 2;
+		}
+
+		maxValue -= 2;
 	}
 
-	int i = hoursIndex;
-	i += mode == Loading ? 0 : hourStep * hours;
 
-	for (; i < hourStep * hours + hourStep; i++)
+	for (; i < maxValue; i++)
 	{
-		strip.setPixelColor(i, hourColor);
+		LED.strip.setPixelColor(LED.lines[0][i], hourColor);
 	}
 }
 
-void ClocksClass::SetMinutes(int minutes)
+void ClocksClass::SetMinutes(byte minutes)
 {
-	if (minutes == 0)
-	{
-		for (int i = minutesIndex; i < minutesIndex + 60; i++)
-		{
-			strip.setPixelColor(i, strip.Color(0, 0, 0));
-		}
-	}
-	
-	int i = minutesIndex;
-	i += mode == Loading ? 0 : minutes;
+	byte i = mode == Loading ? 0 : minutes;
 
-	for (; i <= minutesIndex + minutes; i++)
+	for (; i <= minutes; i++)
 	{
-		strip.setPixelColor(i, minuteColor);
+		LED.strip.setPixelColor(LED.lines[1][i], minuteColor);
 	}
 }
 
-void ClocksClass::SetSeconds(int seconds)
+void ClocksClass::SetSeconds(byte seconds)
 {
-	if (seconds == 0)
-	{
-		for (int i = secondsIndex; i < secondsIndex + 60; i++)
-		{
-			strip.setPixelColor(i, strip.Color(0, 0, 0));
-		}
-	}
-	
-	int i = secondsIndex;
-	i += mode == Loading ? 0 : seconds;
+	byte i = mode == Loading ? 0 : seconds;
 
-	for (; i <= secondsIndex + seconds; i++)
+	for (; i <= seconds; i++)
 	{
-		strip.setPixelColor(i, secondColor);
+		LED.strip.setPixelColor(LED.lines[2][i], secondColor);
+	}
+}
+
+void ClocksClass::SetArrows(byte hours, byte minutes, byte seconds)
+{
+	byte hourIndex = (byte)(((float)hours + (float)minutes / 60.0f) * 5.0f);
+
+	LED.strip.setPixelColor(LED.lines[0][hourIndex], hourColor);
+	LED.strip.setPixelColor(LED.lines[0][minutes], minuteColor);
+	LED.strip.setPixelColor(LED.lines[1][minutes], minuteColor);
+	LED.strip.setPixelColor(LED.lines[0][seconds], secondColor);
+	LED.strip.setPixelColor(LED.lines[1][seconds], secondColor);
+	LED.strip.setPixelColor(LED.lines[2][seconds], secondColor);
+}
+
+void ClocksClass::ShowMarks()
+{
+	for (byte i = 0; i < 60; i += 5)
+	{
+		LED.strip.setPixelColor(LED.lines[2][i], secondColor);
 	}
 }
 
 ClocksClass::ClocksClass()
 {
-	strip = Adafruit_NeoPixel(count_led, PIN, NEO_GRB + NEO_KHZ800);
-
 	currentTime[0] = 0;
 	currentTime[1] = 0;
 	currentTime[2] = 0;
 
-	hourColor = strip.Color(255, 0, 0);
-	minuteColor = strip.Color(48, 213, 200);
-	secondColor = strip.Color(34, 139, 34);
+	hourColor = LED.strip.Color(255, 0, 0);
+	minuteColor = LED.strip.Color(48, 213, 200);
+	secondColor = LED.strip.Color(34, 139, 34);
 }
 
 

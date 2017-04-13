@@ -9,40 +9,35 @@
 	#include "WProgram.h"
 #endif
 
-#include <Adafruit_NeoPixel.h>
+#include "LED.h"
 
 enum Mode
 {
-	Loading, Simple
+	Loading, Simple, Markup, Arrows
 };
 
 class ClocksClass
 {
  private:
-	 int PIN = 6;
-	 int hoursIndex = 0;
-	 int minutesIndex = 60;
-	 int secondsIndex = 120;
-
 	 uint32_t hourColor, minuteColor, secondColor;
 
-	 int currentTime[3];
+	 byte currentTime[3];
 	 Mode mode;
 
-	 void SetHours(int hours);
-	 void SetMinutes(int minutes);
-	 void SetSeconds(int seconds);
+	 void SetHours(byte hours);
+	 void SetMinutes(byte minutes);
+	 void SetSeconds(byte seconds);
+	 void SetArrows(byte hours, byte minutes, byte seconds);
+	 void ShowMarks();
 
  public:
 	 ClocksClass();
 
-	int count_led = 180;
-	Adafruit_NeoPixel strip;
-
-	void Clear();
-	void SetTime(int hours, int minutes, int seconds);
-	void SetHourColor(int red, int green, int blue);
-	void SetMode(Mode mode);
+	 void SetTime(byte hours, byte minutes, byte seconds);
+	 void SetHourColor(byte red, byte green, byte blue);
+	 void SetMinuteColor(byte red, byte green, byte blue);
+	 void SetSecondColor(byte red, byte green, byte blue);
+	 void SetMode(Mode mode);
 };
 
 extern ClocksClass Clocks;
