@@ -85,12 +85,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Clocks.h" />
+    <ClInclude Include="Gradient.h" />
     <ClInclude Include="LED.h" />
+    <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="__vm\.LED clocks.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clocks.cpp" />
+    <ClCompile Include="Gradient.cpp" />
     <ClCompile Include="LED.cpp" />
+    <ClCompile Include="SplashScreen.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

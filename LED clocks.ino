@@ -1,3 +1,4 @@
+#include "Gradient.h"
 #include "LED.h"
 #include "Clocks.h"
 
@@ -7,12 +8,17 @@
 #include <SoftwareSerial.h>
 RTC_DS1307 RTC;
 ////////////////////
-SoftwareSerial mySerial(0, 1);
+SoftwareSerial bluetooth(0, 1);
+
+enum {SPLASH, CLOCK} mode;
+enum {GRADIENT} splashType;
+
+void useClock();
 
 void setup()
 {
 	// THIS TOO!!!
-	mySerial.begin(9600);
+	bluetooth.begin(9600);
 	Wire.begin();
 	RTC.begin();
 	if (!RTC.isrunning()) 
@@ -25,9 +31,62 @@ void setup()
 	LED.strip.begin();
 	LED.strip.show();
 	Clocks.SetMode(Mode::Markup);
+	Gradient.init();
+	mode = CLOCK;
 }
 
 void loop()
+{
+	// check if we need to change mode
+	if (bluetooth.available())
+	{
+		int value = bluetooth.read();
+		if (value == 4)
+		{
+			while (!bluetooth.available);
+			value = bluetooth.read();
+
+			switch (value)
+			{
+			case 0:
+				mode = CLOCK;
+				break;
+			case 1:
+				mode = SPLASH;
+				while (!bluetooth.available);
+				value = bluetooth.read();
+				switch (value)
+				{
+				case 0:
+					splashType = GRADIENT;
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	switch (mode)
+	{
+	case SPLASH:
+		useSplashScreen();
+		break;
+	case CLOCK:
+		useClock();
+		break;
+	}
+}
+
+void useSplashScreen()
+{
+	Gradient.update();
+	delay(100);
+}
+
+void useClock()
 {
 	// THIS OMG!!!
 
@@ -50,53 +109,67 @@ void loop()
 		second = 59;
 	}
 	//////////////////////////////
-	  
+
 	/// BLUETOOTH PART, REFACTOR!!!
 
-	if (mySerial.available())
+	if (bluetooth.available())
 	{
-		byte val = mySerial.read();
+		byte val = bluetooth.read();
 		// При символе "W" включаем светодиод
 		if (val == 1)
 		{
 			// HERE - TIME
-			while (!mySerial.available());
-			char h = mySerial.read() + '0';
-			while (!mySerial.available());
-			char m = mySerial.read() + '0';
-			mySerial.flush();
+			while (!bluetooth.available());
+			int h = bluetooth.read();
+			while (!bluetooth.available());
+			int m = bluetooth.read();
+			bluetooth.flush();
 			char time[8];
-			sprintf(time, "%d:%d:00", h, m);
+			if (m > 9 && h > 9)
+				sprintf(time, "%d:%d:00", h, m);
+			else if (m < 9 && h > 9)
+				sprintf(time, "%d:0%d:00", h, m);
+			else if (m > 9 && h < 9)
+				sprintf(time, "0%d:%d:00", h, m);
+			else
+				sprintf(time, "0%d:0%d:00", h, m);
 			RTC.adjust(DateTime(__DATE__, time));
 		}
 		else if (val == 2)
 		{
 			// HERE WILL BE MODE
-			while (!mySerial.available());
-			val = mySerial.read();
-			mySerial.flush();
+			while (!bluetooth.available());
+			val = bluetooth.read();
+			bluetooth.flush();
 			if (val == 'S')
 			{
 				Clocks.SetMode(Simple);
 			}
-			// При символе "S" выключаем светодиод
-			if (val == 'L')
+			else if (val == 'L')
 			{
 				Clocks.SetMode(Loading);
+			}
+			else if (val == 'M')
+			{
+				Clocks.SetMode(Markup);
+			}
+			else if (val == 'A')
+			{
+				Clocks.SetMode(Arrows);
 			}
 		}
 		else if (val == 3)
 		{
 			// HERE WILL BE COLOR
-			while (!mySerial.available());
-			val = mySerial.read();
-			while (!mySerial.available());
-			byte r = mySerial.read();
-			while (!mySerial.available());
-			byte g = mySerial.read();
-			while (!mySerial.available());
-			byte b = mySerial.read();
-			mySerial.flush();
+			while (!bluetooth.available());
+			val = bluetooth.read();
+			while (!bluetooth.available());
+			byte r = bluetooth.read();
+			while (!bluetooth.available());
+			byte g = bluetooth.read();
+			while (!bluetooth.available());
+			byte b = bluetooth.read();
+			bluetooth.flush();
 
 			if (val == 'H')
 			{

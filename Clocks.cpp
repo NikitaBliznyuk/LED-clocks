@@ -106,12 +106,12 @@ void ClocksClass::SetArrows(byte hours, byte minutes, byte seconds)
 {
 	byte hourIndex = (byte)(((float)hours + (float)minutes / 60.0f) * 5.0f);
 
-	LED.strip.setPixelColor(LED.lines[0][hourIndex], hourColor);
 	LED.strip.setPixelColor(LED.lines[0][minutes], minuteColor);
 	LED.strip.setPixelColor(LED.lines[1][minutes], minuteColor);
+	LED.strip.setPixelColor(LED.lines[2][minutes], minuteColor);
+	LED.strip.setPixelColor(LED.lines[0][hourIndex], hourColor);
+	LED.strip.setPixelColor(LED.lines[1][hourIndex], hourColor);
 	LED.strip.setPixelColor(LED.lines[0][seconds], secondColor);
-	LED.strip.setPixelColor(LED.lines[1][seconds], secondColor);
-	LED.strip.setPixelColor(LED.lines[2][seconds], secondColor);
 }
 
 void ClocksClass::ShowMarks()
