@@ -8,7 +8,6 @@
 #else
 	#include "WProgram.h"
 #endif
-
 #include <Adafruit_NeoPixel.h>
 
 class LEDClass

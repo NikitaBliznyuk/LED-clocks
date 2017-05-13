@@ -1,3 +1,5 @@
+#include <Adafruit_NeoPixel.h>
+#include "Loading.h"
 #include "Gradient.h"
 #include "LED.h"
 #include "Clocks.h"
@@ -13,7 +15,7 @@ SoftwareSerial bluetooth(0, 1);
 enum {SPLASH, CLOCK} mode;
 enum {GRADIENT} splashType;
 
-void useClock();
+void useClock(int value);
 
 void setup()
 {
@@ -32,40 +34,42 @@ void setup()
 	LED.strip.show();
 	Clocks.SetMode(Mode::Markup);
 	Gradient.init();
+	Loading.init();
+	while (!Loading.isLoaded())
+	{
+		Loading.update();
+		delay(100);
+	}
+	Loading.close();
 	mode = CLOCK;
 }
 
 void loop()
 {
 	// check if we need to change mode
+	int value = 0;
 	if (bluetooth.available())
 	{
-		int value = bluetooth.read();
+		value = bluetooth.read();
 		if (value == 4)
 		{
-			while (!bluetooth.available);
+			while (!bluetooth.available());
 			value = bluetooth.read();
+
+			mode = SPLASH;
 
 			switch (value)
 			{
 			case 0:
-				mode = CLOCK;
-				break;
-			case 1:
-				mode = SPLASH;
-				while (!bluetooth.available);
-				value = bluetooth.read();
-				switch (value)
-				{
-				case 0:
-					splashType = GRADIENT;
-				default:
-					break;
-				}
+				splashType = GRADIENT;
 				break;
 			default:
 				break;
 			}
+		}
+		else
+		{
+			mode = CLOCK;
 		}
 	}
 
@@ -75,7 +79,7 @@ void loop()
 		useSplashScreen();
 		break;
 	case CLOCK:
-		useClock();
+		useClock(value);
 		break;
 	}
 }
@@ -86,7 +90,7 @@ void useSplashScreen()
 	delay(100);
 }
 
-void useClock()
+void useClock(int value)
 {
 	// THIS OMG!!!
 
@@ -112,11 +116,10 @@ void useClock()
 
 	/// BLUETOOTH PART, REFACTOR!!!
 
-	if (bluetooth.available())
+	if (value != 0)
 	{
-		byte val = bluetooth.read();
 		// При символе "W" включаем светодиод
-		if (val == 1)
+		if (value == 1)
 		{
 			// HERE - TIME
 			while (!bluetooth.available());
@@ -135,34 +138,34 @@ void useClock()
 				sprintf(time, "0%d:0%d:00", h, m);
 			RTC.adjust(DateTime(__DATE__, time));
 		}
-		else if (val == 2)
+		else if (value == 2)
 		{
 			// HERE WILL BE MODE
 			while (!bluetooth.available());
-			val = bluetooth.read();
+			value = bluetooth.read();
 			bluetooth.flush();
-			if (val == 'S')
+			if (value == 'S')
 			{
 				Clocks.SetMode(Simple);
 			}
-			else if (val == 'L')
+			else if (value == 'L')
 			{
-				Clocks.SetMode(Loading);
+				Clocks.SetMode(Load);
 			}
-			else if (val == 'M')
+			else if (value == 'M')
 			{
 				Clocks.SetMode(Markup);
 			}
-			else if (val == 'A')
+			else if (value == 'A')
 			{
 				Clocks.SetMode(Arrows);
 			}
 		}
-		else if (val == 3)
+		else if (value == 3)
 		{
 			// HERE WILL BE COLOR
 			while (!bluetooth.available());
-			val = bluetooth.read();
+			value = bluetooth.read();
 			while (!bluetooth.available());
 			byte r = bluetooth.read();
 			while (!bluetooth.available());
@@ -171,15 +174,15 @@ void useClock()
 			byte b = bluetooth.read();
 			bluetooth.flush();
 
-			if (val == 'H')
+			if (value == 'H')
 			{
 				Clocks.SetHourColor(r, g, b);
 			}
-			else if (val == 'M')
+			else if (value == 'M')
 			{
 				Clocks.SetMinuteColor(r, g, b);
 			}
-			else if (val == 'S')
+			else if (value == 'S')
 			{
 				Clocks.SetSecondColor(r, g, b);
 			}

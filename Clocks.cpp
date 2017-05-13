@@ -58,9 +58,9 @@ void ClocksClass::SetHours(byte hours)
 	byte hourStep = 5;
 	byte maxValue = hourStep * hours + hourStep;
 
-	byte i = mode == Loading ? 0 : hourStep * hours;
+	byte i = mode == Load ? 0 : hourStep * hours;
 
-	if (mode != Loading)
+	if (mode != Load)
 	{
 		if (i == 0)
 		{
@@ -84,7 +84,7 @@ void ClocksClass::SetHours(byte hours)
 
 void ClocksClass::SetMinutes(byte minutes)
 {
-	byte i = mode == Loading ? 0 : minutes;
+	byte i = mode == Load ? 0 : minutes;
 
 	for (; i <= minutes; i++)
 	{
@@ -94,7 +94,7 @@ void ClocksClass::SetMinutes(byte minutes)
 
 void ClocksClass::SetSeconds(byte seconds)
 {
-	byte i = mode == Loading ? 0 : seconds;
+	byte i = mode == Load ? 0 : seconds;
 
 	for (; i <= seconds; i++)
 	{

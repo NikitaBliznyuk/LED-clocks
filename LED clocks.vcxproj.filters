@@ -33,6 +33,9 @@
     <ClInclude Include="Gradient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Loading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clocks.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gradient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

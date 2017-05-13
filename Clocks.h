@@ -13,7 +13,7 @@
 
 enum Mode
 {
-	Loading, Simple, Markup, Arrows
+	Load, Simple, Markup, Arrows
 };
 
 class ClocksClass

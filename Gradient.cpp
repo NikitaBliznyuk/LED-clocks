@@ -109,7 +109,7 @@ void GradientClass::update()
 
 void GradientClass::close()
 {
-
+	LED.clear();
 }
 
 GradientClass Gradient;
