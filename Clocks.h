@@ -11,7 +11,7 @@
 
 #include "LED.h"
 
-enum Mode
+enum ClockMode
 {
 	Load, Simple, Markup, Arrows
 };
@@ -22,7 +22,7 @@ class ClocksClass
 	 uint32_t hourColor, minuteColor, secondColor;
 
 	 byte currentTime[3];
-	 Mode mode;
+	 ClockMode mode;
 
 	 void SetHours(byte hours);
 	 void SetMinutes(byte minutes);
@@ -37,7 +37,7 @@ class ClocksClass
 	 void SetHourColor(byte red, byte green, byte blue);
 	 void SetMinuteColor(byte red, byte green, byte blue);
 	 void SetSecondColor(byte red, byte green, byte blue);
-	 void SetMode(Mode mode);
+	 void SetMode(ClockMode mode);
 };
 
 extern ClocksClass Clocks;

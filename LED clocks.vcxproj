@@ -89,6 +89,7 @@
     <ClInclude Include="LED.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="SplashScreen.h" />
+    <ClInclude Include="Stars.h" />
     <ClInclude Include="__vm\.LED clocks.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +98,7 @@
     <ClCompile Include="LED.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="SplashScreen.cpp" />
+    <ClCompile Include="Stars.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

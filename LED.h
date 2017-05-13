@@ -22,6 +22,8 @@ public:
 
 	LEDClass();
 	void clear();
+	void show();
+	void setColor(int pixel,int r, int g, int b);
 };
 
 extern LEDClass LED;

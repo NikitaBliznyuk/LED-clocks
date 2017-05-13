@@ -39,3 +39,13 @@ void LEDClass::clear()
 		strip.setPixelColor(i, strip.Color(0, 0, 0));
 	}
 }
+
+void LEDClass::show()
+{
+	strip.show();
+}
+
+void LEDClass::setColor(int pixel, int r, int g, int b)
+{
+	strip.setPixelColor(pixel, strip.Color(r, g, b));
+}

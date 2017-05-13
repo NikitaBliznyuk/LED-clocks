@@ -1,3 +1,4 @@
+#include "Stars.h"
 #include <Adafruit_NeoPixel.h>
 #include "Loading.h"
 #include "Gradient.h"
@@ -12,8 +13,8 @@ RTC_DS1307 RTC;
 ////////////////////
 SoftwareSerial bluetooth(0, 1);
 
-enum {SPLASH, CLOCK} mode;
-enum {GRADIENT} splashType;
+enum WorkMode {SPLASH, CLOCK} mode;
+enum SplashType {GRADIENT, STARS} splashType;
 
 void useClock(int value);
 
@@ -32,16 +33,18 @@ void setup()
 	LED.strip.setBrightness(30);
 	LED.strip.begin();
 	LED.strip.show();
-	Clocks.SetMode(Mode::Markup);
+	Clocks.SetMode(ClockMode::Markup);
 	Gradient.init();
 	Loading.init();
+	Stars.init();
 	while (!Loading.isLoaded())
 	{
 		Loading.update();
 		delay(100);
 	}
 	Loading.close();
-	mode = CLOCK;
+	mode = SPLASH;
+	splashType = STARS;
 }
 
 void loop()
@@ -63,6 +66,9 @@ void loop()
 			case 0:
 				splashType = GRADIENT;
 				break;
+			case 1:
+				splashType = STARS;
+				break;
 			default:
 				break;
 			}
@@ -82,12 +88,21 @@ void loop()
 		useClock(value);
 		break;
 	}
+
+	delay(100);
 }
 
 void useSplashScreen()
 {
-	Gradient.update();
-	delay(100);
+	switch (splashType)
+	{
+	case SplashType::GRADIENT:
+		Gradient.update();
+		break;
+	case SplashType::STARS:
+		Stars.update();
+		break;
+	}
 }
 
 void useClock(int value)
@@ -146,19 +161,19 @@ void useClock(int value)
 			bluetooth.flush();
 			if (value == 'S')
 			{
-				Clocks.SetMode(Simple);
+				Clocks.SetMode(ClockMode::Simple);
 			}
 			else if (value == 'L')
 			{
-				Clocks.SetMode(Load);
+				Clocks.SetMode(ClockMode::Load);
 			}
 			else if (value == 'M')
 			{
-				Clocks.SetMode(Markup);
+				Clocks.SetMode(ClockMode::Markup);
 			}
 			else if (value == 'A')
 			{
-				Clocks.SetMode(Arrows);
+				Clocks.SetMode(ClockMode::Arrows);
 			}
 		}
 		else if (value == 3)
@@ -192,5 +207,4 @@ void useClock(int value)
 	////////////////////////////////
 
 	Clocks.SetTime(hour, minute, second);
-	delay(100);
 }

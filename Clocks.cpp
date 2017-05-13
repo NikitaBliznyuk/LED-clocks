@@ -48,7 +48,7 @@ void ClocksClass::SetSecondColor(byte red, byte green, byte blue)
 	secondColor = LED.strip.Color(red, green, blue);
 }
 
-void ClocksClass::SetMode(Mode mode)
+void ClocksClass::SetMode(ClockMode mode)
 {
 	this->mode = mode;
 }
