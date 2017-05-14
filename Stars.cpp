@@ -9,7 +9,7 @@ void StarsClass::randomizeGrowing()
 	int count = 0;
 	do
 	{
-		currentGrowing = rand() % 180;
+		currentGrowing = rand() % starCount;
 		count++;
 	} while (currentFading == currentGrowing || (stars[currentGrowing] > 0 && count < 50));
 }
@@ -19,7 +19,7 @@ void StarsClass::randomizeFading()
 	int count = 0;
 	do
 	{
-		currentFading = rand() % 180;
+		currentFading = rand() % starCount;
 		count++;
 	} while (currentFading == currentGrowing || (stars[currentFading] == 0 && count < 50));
 }

@@ -1,3 +1,4 @@
+#include "Gravity.h"
 #include "Stars.h"
 #include <Adafruit_NeoPixel.h>
 #include "Loading.h"
@@ -14,7 +15,7 @@ RTC_DS1307 RTC;
 SoftwareSerial bluetooth(0, 1);
 
 enum WorkMode {SPLASH, CLOCK} mode;
-enum SplashType {GRADIENT, STARS} splashType;
+enum SplashType {GRADIENT, STARS, GRAVITY} splashType;
 
 void useClock(int value);
 
@@ -37,6 +38,7 @@ void setup()
 	Gradient.init();
 	Loading.init();
 	Stars.init();
+	Gravity.init();
 	while (!Loading.isLoaded())
 	{
 		Loading.update();
@@ -44,7 +46,7 @@ void setup()
 	}
 	Loading.close();
 	mode = SPLASH;
-	splashType = STARS;
+	splashType = GRAVITY;
 }
 
 void loop()
@@ -65,10 +67,14 @@ void loop()
 			{
 			case 0:
 				splashType = GRADIENT;
+				Gradient.init();
 				break;
 			case 1:
 				splashType = STARS;
+				Stars.init();
 				break;
+			case 2:
+				splashType = GRAVITY;
 			default:
 				break;
 			}
@@ -101,6 +107,8 @@ void useSplashScreen()
 		break;
 	case SplashType::STARS:
 		Stars.update();
+	case SplashType::GRAVITY:
+		Gravity.update();
 		break;
 	}
 }

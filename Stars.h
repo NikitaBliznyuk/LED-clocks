@@ -14,7 +14,7 @@
 #define maxShiningStars 40
 #define updateTime 5000 // time in ms
 #define fadeValue 15
-#define growValue 16
+#define growValue 15
 
 #include "SplashScreen.h"
 

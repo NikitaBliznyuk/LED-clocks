@@ -81,8 +81,6 @@ void GradientClass::init()
 	r2 = 0; g2 = 255; b2 = 0;
 
 	pos1 = 0, pos2 = 1;
-
-	step = 1;
 }
 
 void GradientClass::update()

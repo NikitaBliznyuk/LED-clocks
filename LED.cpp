@@ -12,7 +12,7 @@ void LEDClass::calculateIndexes()
 	{
 		if (i % 2 == 0)
 		{
-			lines[0][i] = i * 3;
+			lines[0][i] = i * 3 + 0;
 			lines[1][i] = i * 3 + 1;
 			lines[2][i] = i * 3 + 2;
 		}
@@ -20,7 +20,7 @@ void LEDClass::calculateIndexes()
 		{
 			lines[0][i] = i * 3 + 2;
 			lines[1][i] = i * 3 + 1;
-			lines[2][i] = i * 3;
+			lines[2][i] = i * 3 + 0;
 		}
 	}
 }
